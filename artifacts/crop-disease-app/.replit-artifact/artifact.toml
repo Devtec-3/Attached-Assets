@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Crop Disease Detection"
+version = "1.0.0"
+id = "artifacts/crop-disease-app"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25194
+
+[services.development]
+run = "pnpm --filter @workspace/crop-disease-app run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/crop-disease-app", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/crop-disease-app/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25194"
+BASE_PATH = "/"
