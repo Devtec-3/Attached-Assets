@@ -47,9 +47,10 @@ def create_app() -> Flask:
 
     return app
 
+app = Flask(__name__) # Now Gunicorn can see it!
 
-if __name__ == "__main__":
-    raw_port = os.environ.get("PORT", "8080")
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
     try:
         port = int(raw_port)
     except ValueError:
