@@ -1,5 +1,4 @@
 import { useEffect, useState, type ComponentType } from "react";
-
 import { modules as discoveredModules } from "./.generated/mockup-components";
 
 type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
@@ -91,32 +90,6 @@ function getBasePath(): string {
   return import.meta.env.BASE_URL.replace(/\/$/, "");
 }
 
-function getPreviewExamplePath(): string {
-  const basePath = getBasePath();
-  return `${basePath}/preview/ComponentName`;
-}
-
-function Gallery() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
-      <div className="text-center max-w-md">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-3">
-          Component Preview Server
-        </h1>
-        <p className="text-gray-500 mb-4">
-          This server renders individual components for the workspace canvas.
-        </p>
-        <p className="text-sm text-gray-400">
-          Access component previews at{" "}
-          <code className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">
-            {getPreviewExamplePath()}
-          </code>
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function getPreviewPath(): string | null {
   const basePath = getBasePath();
   const { pathname } = window.location;
@@ -129,8 +102,8 @@ function getPreviewPath(): string | null {
 }
 
 function App() {
-  // If no preview path is provided in the URL, default straight to your main component
-  const previewPath = getPreviewPath() || "App"; 
+  // Change "App" to your actual main component filename if it's different
+  const previewPath = getPreviewPath() || "App";
 
   return (
     <PreviewRenderer
@@ -138,9 +111,6 @@ function App() {
       modules={discoveredModules}
     />
   );
-}
-
-  return <Gallery />;
 }
 
 export default App;
