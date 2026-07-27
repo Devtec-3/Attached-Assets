@@ -1,3 +1,4 @@
+
 """
 app.py — Flask application factory and entry point.
 
@@ -12,7 +13,6 @@ import os
 import sys
 import logging
 
-# ── Ensure backend/ is on sys.path so internal imports work correctly ───────
 _BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 if _BACKEND_DIR not in sys.path:
     sys.path.insert(0, _BACKEND_DIR)
@@ -33,30 +33,27 @@ logger = logging.getLogger(__name__)
 
 def create_app() -> Flask:
     """Create and configure the Flask application."""
-    app = create_app()
+    app = Flask(__name__)
 
-    # Allow CORS from the React frontend (served on the same domain, different path)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # Ensure the SQLite database and tables exist
     init_db()
 
-    # Register route blueprints — all prefixed with /api
     app.register_blueprint(predict_bp, url_prefix="/api")
     app.register_blueprint(health_bp, url_prefix="/api")
 
     return app
 
-app = Flask(__name__) # Now Gunicorn can see it!
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+app = create_app()
+
+if __name__ == "__main__":
+    raw_port = os.environ.get("PORT", "8080")
     try:
         port = int(raw_port)
     except ValueError:
         logger.error("Invalid PORT value: %r", raw_port)
         sys.exit(1)
 
-    flask_app = create_app()
     logger.info("Starting Flask server on port %d", port)
-    flask_app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False)
