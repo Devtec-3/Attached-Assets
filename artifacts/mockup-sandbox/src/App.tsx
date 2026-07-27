@@ -111,16 +111,9 @@ function getDefaultComponentPath(modules: ModuleMap): string {
 }
 
 function App() {
-  const previewPath = getPreviewPath() || getDefaultComponentPath(discoveredModules);
-
-  if (!previewPath) {
-    return (
-      <div style={{ padding: "3rem", fontFamily: "system-ui", textAlign: "center" }}>
-        <h2 style={{ color: "#333" }}>No Mockup Components Found</h2>
-        <p style={{ color: "#666" }}>Please ensure your component files are placed inside the <code>src/components/mockups/</code> directory.</p>
-      </div>
-    );
-  }
+  // If no preview path is in the URL, automatically load your component file name 
+  // (Change "Dashboard" below to match your actual file name inside components/mockups/)
+  const previewPath = getPreviewPath() || "Dashboard";
 
   return (
     <PreviewRenderer
