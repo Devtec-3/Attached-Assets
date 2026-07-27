@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 def create_app() -> Flask:
     """Create and configure the Flask application."""
-    app = Flask(__name__)
+    app = create_app()
 
     # Allow CORS from the React frontend (served on the same domain, different path)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
