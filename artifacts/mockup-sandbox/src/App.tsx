@@ -101,16 +101,26 @@ function getPreviewPath(): string | null {
   return match ? match[1] : null;
 }
 
-// Automatically find the first available mockup component to use as the default view
+// Automatically find the first actual component file present in the mockups folder
 function getDefaultComponentPath(modules: ModuleMap): string {
-  const keys = Object.keys(modules);
-  if (keys.length === 0) return "Dashboard";
-  const match = keys[0].match(/^\.\/components\/mockups\/(.+)\.tsx$/);
-  return match ? match[1] : "Dashboard";
+  for (const key of Object.keys(modules)) {
+    const match = key.match(/^\.\/components\/mockups\/(.+)\.tsx$/);
+    if (match) return match[1];
+  }
+  return "";
 }
 
 function App() {
   const previewPath = getPreviewPath() || getDefaultComponentPath(discoveredModules);
+
+  if (!previewPath) {
+    return (
+      <div style={{ padding: "3rem", fontFamily: "system-ui", textAlign: "center" }}>
+        <h2 style={{ color: "#333" }}>No Mockup Components Found</h2>
+        <p style={{ color: "#666" }}>Please ensure your component files are placed inside the <code>src/components/mockups/</code> directory.</p>
+      </div>
+    );
+  }
 
   return (
     <PreviewRenderer
