@@ -1,3 +1,5 @@
+const API_BASE = 'https://attached-assets-0zuk.onrender.com';
+
 export interface DiagnosedResponse {
   status: 'diagnosed';
   disease_name: string;
@@ -34,10 +36,9 @@ export async function predictCropDisease(
   formData.append('image', image);
   formData.append('crop_type', cropType);
 
-  const response = await fetch('/api/predict', {
+  const response = await fetch(`${API_BASE}/api/predict`, {
     method: 'POST',
     body: formData,
-    credentials: 'include',
   });
 
   const data = await response.json();
@@ -50,9 +51,7 @@ export interface HealthResponse {
 }
 
 export async function checkHealth(): Promise<HealthResponse> {
-  const response = await fetch('/api/health', {
-    credentials: 'include',
-  });
+  const response = await fetch(`${API_BASE}/api/health`);
   const data = await response.json();
   return data as HealthResponse;
 }
