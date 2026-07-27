@@ -75,9 +75,15 @@ function PreviewRenderer({
 
   if (error) {
     return (
-      <pre style={{ color: "red", padding: "2rem", fontFamily: "system-ui" }}>
-        {error}
-      </pre>
+      <div style={{ padding: "3rem", fontFamily: "system-ui", maxWidth: "600px", margin: "0 auto" }}>
+        <h2 style={{ color: "red", marginBottom: "1rem" }}>Component Load Error</h2>
+        <pre style={{ color: "#333", background: "#f5f5f5", padding: "1rem", borderRadius: "8px", whiteSpace: "pre-wrap" }}>
+          {error}
+        </pre>
+        <a href="./" style={{ display: "inline-block", marginTop: "1rem", color: "blue", textDecoration: "underline" }}>
+          &larr; Back to Component List
+        </a>
+      </div>
     );
   }
 
@@ -88,6 +94,44 @@ function PreviewRenderer({
 
 function getBasePath(): string {
   return import.meta.env.BASE_URL.replace(/\/$/, "");
+}
+
+function Gallery({ modules }: { modules: ModuleMap }) {
+  const basePath = getBasePath();
+  const paths = Object.keys(modules).map((key) => {
+    const match = key.match(/^\.\/components\/mockups\/(.+)\.tsx$/);
+    return match ? match[1] : null;
+  }).filter(Boolean) as string[];
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+      <div className="max-w-xl w-full bg-white rounded-xl shadow-md p-8 border border-gray-100">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          CropDX Application Dashboard
+        </h1>
+        <p className="text-gray-600 mb-6 text-sm">
+          Select your project view below to launch your plant disease detection system:
+        </p>
+        
+        {paths.length === 0 ? (
+          <p className="text-red-500 text-sm">No mockup components discovered in this build.</p>
+        ) : (
+          <div className="space-y-3">
+            {paths.map((p) => (
+              <a
+                key={p}
+                href={`${basePath}/preview/${p}`}
+                className="block w-full text-left px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-medium rounded-lg transition border border-emerald-200 shadow-sm flex items-center justify-between"
+              >
+                <span>{p}</span>
+                <span className="text-xs bg-emerald-200 text-emerald-900 px-2 py-1 rounded">Launch &rarr;</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function getPreviewPath(): string | null {
@@ -102,15 +146,18 @@ function getPreviewPath(): string | null {
 }
 
 function App() {
-  // Change "App" to your actual main component filename if it's different
-  const previewPath = getPreviewPath() || "App";
+  const previewPath = getPreviewPath();
 
-  return (
-    <PreviewRenderer
-      componentPath={previewPath}
-      modules={discoveredModules}
-    />
-  );
+  if (previewPath) {
+    return (
+      <PreviewRenderer
+        componentPath={previewPath}
+        modules={discoveredModules}
+      />
+    );
+  }
+
+  return <Gallery modules={discoveredModules} />;
 }
 
 export default App;
