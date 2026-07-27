@@ -6,6 +6,7 @@ in module-level variables so every request does not hit the filesystem.
 """
 
 import os
+import gc
 import json
 import logging
 import numpy as np
@@ -86,6 +87,7 @@ def get_prediction(image_bytes: bytes) -> tuple[str, float] | None:
         preds = _model.predict(arr, verbose=0)       # (1, num_classes)
         idx = int(np.argmax(preds[0]))
         confidence = float(preds[0][idx])
+        gc.collect()
         return _labels[idx], confidence
 
     except Exception as exc:
